@@ -30,6 +30,8 @@ class CreateGIF:
 						append_images = frames[1:], 
 						save_all = True, 
 						duration = gif_duration, 
+						optimize=True,
+						quality=65,
 						loop = 0 ) # loop = 0 loop forever, duration in milliseconds
 
 file_path = "./img"
