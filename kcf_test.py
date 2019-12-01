@@ -10,7 +10,6 @@ class ImageTracker():
         trackerTypes = ['BOOSTING', 'MIL', 'KCF','TLD', 'MEDIANFLOW', 'GOTURN', 'MOSSE', 'CSRT']
 
         if trackerType == trackerTypes[0]:
-
             self.tracker = cv2.TrackerBoosting_create()
         elif trackerType == trackerTypes[1]: 
             self.tracker = cv2.TrackerMIL_create()
@@ -72,10 +71,11 @@ class ImageTracker():
           success, boxes = multiTracker.update(frame)
           print(success)
           # draw tracked objects
-          for i, newbox in enumerate(boxes):
-            p1 = (int(newbox[0]), int(newbox[1]))
-            p2 = (int(newbox[0] + newbox[2]), int(newbox[1] + newbox[3]))
-            cv2.rectangle(frame, p1, p2, colors[i], 2, 1)
+          if success:
+              for i, newbox in enumerate(boxes):
+                p1 = (int(newbox[0]), int(newbox[1]))
+                p2 = (int(newbox[0] + newbox[2]), int(newbox[1] + newbox[3]))
+                cv2.rectangle(frame, p1, p2, colors[i], 2, 1)
          
           # show frame
           cv2.imshow('MultiTracker', frame)
@@ -87,14 +87,11 @@ class ImageTracker():
 # Extra Credit
 def main():
 
-    path = "/Users/liruilin/Desktop/course/JHU/CV/cv-tracking/datasets/Panda/img/"
+    path = "./datasets/Panda/img/"
     # choose from ['BOOSTING', 'MIL', 'KCF','TLD', 'MEDIANFLOW', 'GOTURN', 'MOSxSE', 'CSRT']
     tracker = ImageTracker('KCF')
     tracker.tracking(path)
   
-
-
-
 if __name__ == '__main__':
     main()
          
