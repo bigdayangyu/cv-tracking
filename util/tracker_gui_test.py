@@ -105,11 +105,11 @@ class MainUI(object):
         self.score_box.addItem(label_score)
         self.groundtruth_box.addItem(label_gt)
         self.ref_box.addItem(label_ref)
+
         self.i = 0
 
         self.updateTime = ptime.time()
         self.fps = 0
-
 
         MainWindow.show()
 
@@ -124,12 +124,17 @@ class MainUI(object):
             imagePath = os.path.join(path+ "%04d.jpg"%i)
 
             frame = cv2.imread(imagePath)
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             image_set.append(frame)
         return image_set
 
     def updateData(self):
 
+        self.score_map.setImage(self.data_set[self.i])
         self.groundtruth_img.setImage(self.data_set[self.i])
+
+        self.ref_img.setImage(self.data_set[self.i])
+
         self.i = (self.i + 1) % len(self.data_set)
        
         QtCore.QTimer.singleShot(1, self.updateData)
@@ -137,9 +142,6 @@ class MainUI(object):
         fps2 = 1.0/(now - self.updateTime)
         self.updateTime = now 
         self.fps = self.fps*0.9 + fps2*0.1
-
-
-
 
 if __name__ == "__main__":
 
