@@ -56,9 +56,9 @@ class MainUI(object):
         self.ref_box.setAspectLocked(True)
 
         # image stuff 
-        self.score_map = pg.ImageItem()
-        self.groundtruth_img = pg.ImageItem()
-        self.ref_img = pg.ImageItem()
+        self.score_map = pg.ImageItem(axisOrder='row-major')
+        self.groundtruth_img = pg.ImageItem(axisOrder='row-major')
+        self.ref_img = pg.ImageItem(axisOrder='row-major')
 
         self.score_box.addItem(self.score_map)
         self.groundtruth_box.addItem(self.groundtruth_img)
