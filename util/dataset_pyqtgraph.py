@@ -14,7 +14,7 @@ import pyqtgraph.ptime as ptime
 import sys
 import os
 import cv2
-
+import numpy as np
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -78,6 +78,11 @@ class Ui_MainWindow(object):
         self.results_box.addItem(self.groundtruth_img)
         self.ref_box.addItem(self.ref_img)
 
+        # Set Image placeholders
+        self.score_map.setImage(np.zeros((300,230,3)))
+        self.groundtruth_img.setImage(np.zeros((300,230,3)))
+        self.ref_img.setImage(np.zeros((300,230,3)))
+
         # Add the Labels to the images
         font = QtGui.QFont()
         font.setPointSize(4)
@@ -139,12 +144,12 @@ class Ui_MainWindow(object):
             frame = cv2.imread(imagePath)
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             image_set.append(frame)
+
         return image_set
 
     def updateData(self):
         self.score_map.setImage(self.data_set[self.i])
         self.groundtruth_img.setImage(self.data_set[self.i])
-
         self.ref_img.setImage(self.data_set[self.i])
 
         self.i = (self.i + 1) % len(self.data_set)
