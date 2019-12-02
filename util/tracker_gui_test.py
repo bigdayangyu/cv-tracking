@@ -43,14 +43,16 @@ class MainUI(object):
 
 
         # Define the ViewBoxes for each of the images to be displayed
-        self.score_box = MainWindow.addViewBox(1, 0, colspan=3)
-        self.groundtruth_box = MainWindow.addViewBox(3, 0, colspan=2)
-        self.ref_box = MainWindow.addViewBox(3, 2)
+        self.widget_box = MainWindow.addViewBox(0, 0, colspan=1)
+        self.score_box = MainWindow.addViewBox(0, 2, colspan=3)
+        self.groundtruth_box = MainWindow.addViewBox(3, 0, colspan=3)
+        self.ref_box = MainWindow.addViewBox(3, 3)
 
         self.score_box.invertY(True)  # Images usually have their Y-axis pointing downward
         self.groundtruth_box.invertY(True)
         self.ref_box.invertY(True)
 
+        self.widget_box.setAspectLocked(True)
         self.score_box.setAspectLocked(True)
         self.groundtruth_box.setAspectLocked(True)
         self.ref_box.setAspectLocked(True)
@@ -86,22 +88,26 @@ class MainUI(object):
         self.prior_radius.setParentItem(self.score_map)
         self.score_box.addItem(self.prior_radius)
 
-        # laybels 
+        # labels 
         # Add the Labels to the images
         font = QtGui.QFont()
         font.setPointSize(4)
         param_dict = {'color':(255,255,255),
                       'anchor':(0,1)}
+        label_widget = pg.TextItem(text='Select Dataset', **param_dict)
         label_score = pg.TextItem(text='Score Map', **param_dict)
         label_gt = pg.TextItem(text='Ground Truth', **param_dict)
         label_ref = pg.TextItem(text='Reference Image', **param_dict)
         font.setPointSize(16)
+        label_widget.setFont(font)
         label_score.setFont(font)
         label_gt.setFont(font)
         label_ref.setFont(font)
+        label_widget.setParentItem(self.widget_box)
         label_score.setParentItem(self.score_map)
         label_gt.setParentItem(self.groundtruth_img)
         label_ref.setParentItem(self.ref_img)
+        self.widget_box.addItem(label_widget)
         self.score_box.addItem(label_score)
         self.groundtruth_box.addItem(label_gt)
         self.ref_box.addItem(label_ref)
@@ -153,7 +159,7 @@ if __name__ == "__main__":
     # sys.exit(app.exec_())
     app = QtWidgets.QApplication(sys.argv)
     win = pg.GraphicsLayoutWidget(border=True)
-    path = './Biker/Biker/img/'
+    path = './Panda/img/'
     ui = MainUI(win,path)
     
     # data = load_data(path)
