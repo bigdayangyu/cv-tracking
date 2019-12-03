@@ -31,7 +31,7 @@ class MainUI(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.groupBox = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox.setGeometry(QtCore.QRect(10, 10, 120, 100))
+        self.groupBox.setGeometry(QtCore.QRect(10, 10, 120, 135))
         self.groupBox.setObjectName("groupBox")
 
         self.panda_radBtn = QtWidgets.QRadioButton(self.groupBox)
@@ -44,8 +44,17 @@ class MainUI(object):
         self.tiger_radBtn.setObjectName("tiger_radBtn")
         self.tiger_radBtn.toggled.connect(self.setDataset)
 
+        self.model_pulldown = QtGui.QComboBox(self.groupBox)
+        self.model_pulldown.setGeometry(QtCore.QRect(15, 65, 93, 28))
+        self.model_pulldown.setObjectName("model_pulldown")
+        self.model_pulldown.addItem("Select")
+        self.model_pulldown.addItem("KCF")
+        self.model_pulldown.addItem("MDNet")
+        self.model_pulldown.addItem("SiamFC")
+        self.model_pulldown.activated.connect(self.setModel)
+
         self.display_Btn = QtWidgets.QPushButton(self.groupBox)
-        self.display_Btn.setGeometry(QtCore.QRect(15, 65, 93, 28))
+        self.display_Btn.setGeometry(QtCore.QRect(15, 100, 93, 28))
         self.display_Btn.setObjectName("display_Btn")
 
         # Set up GraphicsLayoutWidget for images
@@ -125,26 +134,50 @@ class MainUI(object):
 
     def setDataset(self):
         if self.panda_radBtn.isChecked():
-            self.img_disp_path = self.path["bolt1"]
+            self.img_disp_path = "bolt1/"
             self.error_plot.removeItem(self.curve1) 
-            # self.curve1 = self.error_plot.plot(np.zeros((300, )))
             self.error_data = self.read_error()
 
-
         if self.tiger_radBtn.isChecked():
-            self.img_disp_path  = self.path["bolt2"]
+            self.img_disp_path  = "bolt2/"
             self.error_plot.removeItem(self.curve1) 
-              
             self.error_data = self.read_error()   
+
+    def setModel(self):
+        if self.model_pulldown.currentText() == "KCF":
+            self.img_root = self.path["KCF"]
+        if self.model_pulldown.currentText() == "MDNet":
+            self.img_root = self.path["MDNet"]
+        if self.model_pulldown.currentText() == "SiamFC":
+            self.img_root = self.path["SiamFC"]
+
+
+#             self.img_disp_path = self.path["bolt1"]
+#             self.error_plot.removeItem(self.curve1) 
+#             # self.curve1 = self.error_plot.plot(np.zeros((300, )))
+#             self.error_data = self.read_error()
+
+
+#         if self.tiger_radBtn.isChecked():
+#             self.img_disp_path  = self.path["bolt2"]
+#             self.error_plot.removeItem(self.curve1) 
+              
+#             self.error_data = self.read_error()   
 
     def addImages(self, MainWindow):
         # self.gt_path = self.path
         self.i = 0
-        
-        # self.error_plot.removeItem(self.curve1) 
-        self.data_set = self.load_data( )
-        self.error =np.zeros((1))
+
+        self.data_set = self.load_data()
+         self.error =np.zeros((1))
         self.curve1 = self.error_plot.plot(np.zeros((1, ))) 
+
+        
+#         # self.error_plot.removeItem(self.curve1) 
+#         self.data_set = self.load_data( )
+#         self.error =np.zeros((1))
+#         self.curve1 = self.error_plot.plot(np.zeros((1, ))) 
+
         self.updateData()
 
     def retranslateUi(self, MainWindow):
@@ -156,11 +189,11 @@ class MainUI(object):
         self.display_Btn.setText(_translate("MainWindow", "Display!"))
      
     def load_data(self):
-        n_files = len(os.listdir(self.img_disp_path)) - 2
+        n_files = len(os.listdir(self.img_root + self.img_disp_path)) - 2
         image_set = []
-        for i in range(1,n_files ):
+        for i in range(1, n_files):
         
-            imagePath = os.path.join(self.img_disp_path+ "%08d.jpg"%i)
+            imagePath = os.path.join(self.img_root + self.img_disp_path + "%08d.jpg"%i)
             frame = cv2.imread(imagePath) # 1 for colored imaged     
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             image_set.append(frame)
@@ -169,7 +202,8 @@ class MainUI(object):
 
     def read_error(self):
         lineList = []
-        filePath = os.path.join(self.img_disp_path + "error.txt")
+
+        filePath = os.path.join(self.img_root + self.img_disp_path + ".txt")
         with open(filePath, 'r') as file:
             for line in file :
                 lines = [float(number) for number in line.strip().split()]
@@ -198,9 +232,15 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
 
     win = QtWidgets.QMainWindow()
-    path = {"bolt1" : './datasets/gui_dataset_mdnet/bolt1/', "bolt2":'./datasets/gui_dataset_kcf/bolt2/', 
-            "football":'./datasets/bolt2_kcf/bolt2/', "football1":'./datasets/bolt2_kcf/bolt2/', 
-            "mountainbike":'./datasets/bolt2_kcf/bolt2/'}
+    # path = {"bolt1" : './datasets/gui_dataset_mdnet/bolt1/', "bolt2":'./datasets/gui_dataset_kcf/bolt2/', 
+    #         "football":'./datasets/bolt2_kcf/bolt2/', "football1":'./datasets/bolt2_kcf/bolt2/', 
+    #         "mountainbike":'./datasets/bolt2_kcf/bolt2/'}
+
+
+    path = {"KCF": './datasets/gui_dataset_kcf/', 
+            "MDNet": './datasets/gui_dataset_mdnet/', 
+            "SiamFC": './datasets/gui_dataset_siamfc/'}
+
 
     ui = MainUI(win, path)
 
