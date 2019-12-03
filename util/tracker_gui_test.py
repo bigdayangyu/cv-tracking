@@ -47,10 +47,11 @@ class MainUI(object):
         self.model_pulldown = QtGui.QComboBox(self.groupBox)
         self.model_pulldown.setGeometry(QtCore.QRect(15, 65, 93, 28))
         self.model_pulldown.setObjectName("model_pulldown")
-        self.model_pulldown.addItem("Select")
+        # self.model_pulldown.addItem("Select")
         self.model_pulldown.addItem("KCF")
         self.model_pulldown.addItem("MDNet")
         self.model_pulldown.addItem("SiamFC")
+        self.img_root = self.path["KCF"]
         self.model_pulldown.activated.connect(self.setModel)
 
         self.display_Btn = QtWidgets.QPushButton(self.groupBox)
@@ -127,6 +128,7 @@ class MainUI(object):
         self.error_data = np.zeros((3, ))
         self.curve1 = self.error_plot.plot(self.error_data)
 
+
         MainWindow.show()
 
     def exit(self):
@@ -169,14 +171,14 @@ class MainUI(object):
         self.i = 0
 
         self.data_set = self.load_data()
-         self.error =np.zeros((1))
+        self.error =np.zeros((1))
         self.curve1 = self.error_plot.plot(np.zeros((1, ))) 
 
         
-#         # self.error_plot.removeItem(self.curve1) 
+        self.error_plot.removeItem(self.curve1) 
 #         self.data_set = self.load_data( )
 #         self.error =np.zeros((1))
-#         self.curve1 = self.error_plot.plot(np.zeros((1, ))) 
+        self.curve1 = self.error_plot.plot(np.zeros((1, ))) 
 
         self.updateData()
 
@@ -189,7 +191,7 @@ class MainUI(object):
         self.display_Btn.setText(_translate("MainWindow", "Display!"))
      
     def load_data(self):
-        n_files = len(os.listdir(self.img_root + self.img_disp_path)) - 2
+        n_files = len(os.listdir(self.img_root + self.img_disp_path)) - 3
         image_set = []
         for i in range(1, n_files):
         
@@ -203,7 +205,7 @@ class MainUI(object):
     def read_error(self):
         lineList = []
 
-        filePath = os.path.join(self.img_root + self.img_disp_path + ".txt")
+        filePath = os.path.join(self.img_root + self.img_disp_path + "error.txt")
         with open(filePath, 'r') as file:
             for line in file :
                 lines = [float(number) for number in line.strip().split()]
