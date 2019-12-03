@@ -5,18 +5,16 @@
 # Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
-
+import cv2
+import numpy as np
 from PyQt5 import QtCore, QtGui, QtWidgets
 from pyqtgraph import GraphicsLayoutWidget
+from PyQt5.QtCore import Qt
 import pyqtgraph as pg
 import pyqtgraph.ptime as ptime
+import time
 import sys
 import os
-import cv2
-import dataset_pyqtgraph 
-import numpy as np
-from PyQt5.QtCore import Qt
-import time
 
 class MainUI(object):
     def __init__(self, MainWindow, data_path):
@@ -47,12 +45,6 @@ class MainUI(object):
         self.legend_label2 = QtWidgets.QLabel(self.groupBox_legend)
         self.legend_label2.setText("Tracking Result ----")
         self.legend_label2.setStyleSheet(" color: rgba(0,255, 0); font-size: 10pt; font-weight: 300;")
-
-        
-        # label.setText("Notes about sample ")
-        # layout = QtWidgets.QVBoxLayout()
-        # layout.addWidget(label)
-        # MainWindow.setLayout(layout)
 
         self.radBtn_1 = QtWidgets.QRadioButton(self.groupBox)
         self.radBtn_1.setGeometry(QtCore.QRect(10, 20, 95, 20))
@@ -138,7 +130,6 @@ class MainUI(object):
         label_gt = pg.TextItem(text='Tracking Error', **param_dict)
         label_ref = pg.TextItem(text='Reference Image', **param_dict)
 
-
         font.setPointSize(16)
         label_score.setFont(font)
         label_gt.setFont(font)
@@ -146,10 +137,6 @@ class MainUI(object):
         label_score.setParentItem(self.score_map)
         label_gt.setParentItem(self.groundtruth_img)
         label_ref.setParentItem(self.ref_img)
-
-
-        # label_score.setParentItem(self.score_map)
-
 
         self.score_box.addItem(label_score)
 
@@ -170,7 +157,6 @@ class MainUI(object):
         self.error_plot = self.graphicsWindow.addPlot(3,0, colspan=200)
         self.error_data = np.zeros((3, ))
         self.curve1 = self.error_plot.plot(self.error_data)
-
 
         MainWindow.show()
 
@@ -228,17 +214,13 @@ class MainUI(object):
             self.img_root = self.path["SiamFC"]
 
     def addImages(self, MainWindow):
-        # self.gt_path = self.path
+
         self.i = 0
 
         self.data_set = self.load_data()
         self.error =np.zeros((1))
         self.curve1 = self.error_plot.plot(np.zeros((1, ))) 
-
-        
         self.error_plot.removeItem(self.curve1) 
-#         self.data_set = self.load_data( )
-#         self.error =np.zeros((1))
         self.curve1 = self.error_plot.plot(np.zeros((1, ))) 
 
         self.updateData()
@@ -286,16 +268,13 @@ class MainUI(object):
 
     def updateData(self):
         self.score_map.setImage(self.data_set[self.i])
-        # self.groundtruth_img.setImage(self.data_set[self.i])
-
         self.ref_img.setImage(self.temp_img)
         self.i = (self.i + 1) % len(self.data_set)
-       
         now = ptime.time()
+
         fps2 = 1.0/(now - self.updateTime)
         self.updateTime = now 
         self.fps = self.fps*0.9 + fps2*0.1
-
         time.sleep(0.01)
         QtCore.QTimer.singleShot(100, self.updateData)
 
@@ -312,6 +291,5 @@ if __name__ == "__main__":
             "SiamFC": './datasets/gui_dataset_siamfc/'}
 
     ui = MainUI(win, path)
-
     win.show()
     sys.exit(app.exec_())
