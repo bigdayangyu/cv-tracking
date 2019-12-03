@@ -65,15 +65,13 @@ class MainUI(object):
 
         self.score_box = self.graphicsWindow.addViewBox(0, 0, colspan=100)
         self.ref_box = self.graphicsWindow.addViewBox(0, 100, colspan=50)
-        # self.groundtruth_box = self.graphicsWindow.addViewBox(3,0, colspan=200)
-
-
+      
         self.score_box.invertY(True)  # Images usually have their Y-axis pointing downward
-        # self.groundtruth_box.invertY(True)
+
         self.ref_box.invertY(True)
 
         self.score_box.setAspectLocked(True)
-        # self.groundtruth_box.setAspectLocked(True)
+ 
         self.ref_box.setAspectLocked(True)
 
         # image stuff 
@@ -87,7 +85,7 @@ class MainUI(object):
         self.ref_img.setImage(np.zeros((300,230,3)))
 
         self.score_box.addItem(self.score_map)
-        # self.groundtruth_box.addItem(self.groundtruth_img)
+
         self.ref_box.addItem(self.ref_img)
 
         # laybels 
@@ -109,7 +107,7 @@ class MainUI(object):
         label_gt.setParentItem(self.groundtruth_img)
         label_ref.setParentItem(self.ref_img)
         self.score_box.addItem(label_score)
-        # self.groundtruth_box.addItem(label_gt)
+
         self.ref_box.addItem(label_ref)
 
 
@@ -119,14 +117,15 @@ class MainUI(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)       
 
         self.i = 0
+        self.error =np.zeros((1))
 
         self.updateTime = ptime.time()
         self.fps = 0
 
         # display error plot 
         self.error_plot = self.graphicsWindow.addPlot(3,0, colspan=200)
-        self.test_data1 = np.random.normal(size=300)
-        self.curve1 = self.error_plot.plot(self.test_data1)
+        self.error_data = np.zeros((3, ))
+        self.curve1 = self.error_plot.plot(self.error_data)
 
         MainWindow.show()
 
@@ -136,9 +135,13 @@ class MainUI(object):
     def setDataset(self):
         if self.panda_radBtn.isChecked():
             self.img_disp_path = "bolt1/"
+            self.error_plot.removeItem(self.curve1) 
+            self.error_data = self.read_error()
 
         if self.tiger_radBtn.isChecked():
             self.img_disp_path  = "bolt2/"
+            self.error_plot.removeItem(self.curve1) 
+            self.error_data = self.read_error()   
 
     def setModel(self):
         if self.model_pulldown.currentText() == "KCF":
@@ -149,10 +152,32 @@ class MainUI(object):
             self.img_root = self.path["SiamFC"]
 
 
+#             self.img_disp_path = self.path["bolt1"]
+#             self.error_plot.removeItem(self.curve1) 
+#             # self.curve1 = self.error_plot.plot(np.zeros((300, )))
+#             self.error_data = self.read_error()
+
+
+#         if self.tiger_radBtn.isChecked():
+#             self.img_disp_path  = self.path["bolt2"]
+#             self.error_plot.removeItem(self.curve1) 
+              
+#             self.error_data = self.read_error()   
+
     def addImages(self, MainWindow):
         # self.gt_path = self.path
         self.i = 0
+
         self.data_set = self.load_data()
+         self.error =np.zeros((1))
+        self.curve1 = self.error_plot.plot(np.zeros((1, ))) 
+
+        
+#         # self.error_plot.removeItem(self.curve1) 
+#         self.data_set = self.load_data( )
+#         self.error =np.zeros((1))
+#         self.curve1 = self.error_plot.plot(np.zeros((1, ))) 
+
         self.updateData()
 
     def retranslateUi(self, MainWindow):
@@ -175,35 +200,33 @@ class MainUI(object):
       
         return image_set
 
-    def read_error(self, path):
+    def read_error(self):
         lineList = []
+
         filePath = os.path.join(self.img_root + self.img_disp_path + ".txt")
         with open(filePath, 'r') as file:
             for line in file :
                 lines = [float(number) for number in line.strip().split()]
-                lineList.append(lines)
-        return lineList 
+                lineList.append(lines[0])
+        return np.array(lineList) 
 
     def updateData(self):
         self.score_map.setImage(self.data_set[self.i])
         self.groundtruth_img.setImage(self.data_set[self.i])
 
         self.ref_img.setImage(self.data_set[self.i])
-
         self.i = (self.i + 1) % len(self.data_set)
+       
         now = ptime.time()
         fps2 = 1.0/(now - self.updateTime)
         self.updateTime = now 
         self.fps = self.fps*0.9 + fps2*0.1
-       # len(self.data_set)/3.5
-        time.sleep(0.02)
-        QtCore.QTimer.singleShot(1, self.updateData)
-       
-        self.test_data1[:-1] = self.test_data1[1:]  # shift data in the array one sample left
-                         
-        self.test_data1[-1] = np.random.normal()
-        self.curve1.setData(self.test_data1)
 
+        time.sleep(0.01)
+        QtCore.QTimer.singleShot(100, self.updateData)
+
+        self.curve1.setData(self.error_data[0:self.i])
+# 
 if __name__ == "__main__":
 
     app = QtWidgets.QApplication(sys.argv)
@@ -213,9 +236,11 @@ if __name__ == "__main__":
     #         "football":'./datasets/bolt2_kcf/bolt2/', "football1":'./datasets/bolt2_kcf/bolt2/', 
     #         "mountainbike":'./datasets/bolt2_kcf/bolt2/'}
 
+
     path = {"KCF": './datasets/gui_dataset_kcf/', 
             "MDNet": './datasets/gui_dataset_mdnet/', 
             "SiamFC": './datasets/gui_dataset_siamfc/'}
+
 
     ui = MainUI(win, path)
 
