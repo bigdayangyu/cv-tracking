@@ -20,7 +20,7 @@ class MainUI(object):
     def __init__(self, MainWindow, data_path):
 
         MainWindow.setWindowTitle('Tracking demo')
-        MainWindow.resize(1000, 700)
+        MainWindow.resize(1050, 690)
         # data path 
         self.gt_path = data_path
         self.path = data_path
@@ -28,23 +28,25 @@ class MainUI(object):
         # Dataset Selection
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+
         self.groupBox = QtWidgets.QGroupBox(self.centralwidget)
         self.groupBox.setGeometry(QtCore.QRect(10, 10, 150, 200))
         self.groupBox.setObjectName("groupBox")
 
         self.groupBox_legend = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox_legend.setGeometry(QtCore.QRect(10, 220, 200, 300))
+        self.groupBox_legend.setGeometry(QtCore.QRect(10, 220, 150, 70))
         self.groupBox_legend.setObjectName("groupBox_legend")
          
         # self.legend_label = QtWidgets.QLabel()
         self.legend_label = QtWidgets.QLabel(self.groupBox_legend)
-        self.legend_label.setGeometry(QtCore.QRect(10,20, 95, 20))
-        self.legend_label.setText("Ground Trut ----")
-        self.legend_label.setStyleSheet(" color: rgba(255, 0, 0); font-size: 10pt; font-weight: 300;")
+        self.legend_label.setGeometry(QtCore.QRect(10, 10, 150, 50))
+        self.legend_label.setText("Ground Truth")
+        self.legend_label.setStyleSheet(" color: rgba(255, 0, 0, 1); font-size: 10pt; font-weight: 300;")
         
         self.legend_label2 = QtWidgets.QLabel(self.groupBox_legend)
-        self.legend_label2.setText("Tracking Result ----")
-        self.legend_label2.setStyleSheet(" color: rgba(0,255, 0); font-size: 10pt; font-weight: 300;")
+        self.legend_label2.setGeometry(QtCore.QRect(10, 30, 150, 50))
+        self.legend_label2.setText("Tracking Result")
+        self.legend_label2.setStyleSheet(" color: rgba(0,255, 0, 1); font-size: 10pt; font-weight: 300;")
 
         self.radBtn_1 = QtWidgets.QRadioButton(self.groupBox)
         self.radBtn_1.setGeometry(QtCore.QRect(10, 20, 95, 20))
@@ -56,7 +58,6 @@ class MainUI(object):
         self.radBtn_2.setObjectName("tiger_radBtn")
         self.radBtn_2.toggled.connect(self.setDataset)
 
-
         self.radBtn_3 = QtWidgets.QRadioButton(self.groupBox)
         self.radBtn_3.setGeometry(QtCore.QRect(10, 60, 95, 20))
         self.radBtn_3.setObjectName("panda_radBtn")
@@ -66,7 +67,6 @@ class MainUI(object):
         self.radBtn_4.setGeometry(QtCore.QRect(10, 80, 95, 20))
         self.radBtn_4.setObjectName("tiger_radBtn")
         self.radBtn_4.toggled.connect(self.setDataset)
-
 
         self.radBtn_5 = QtWidgets.QRadioButton(self.groupBox)
         self.radBtn_5.setGeometry(QtCore.QRect(10, 100, 95, 20))
@@ -89,7 +89,7 @@ class MainUI(object):
 
         # Set up GraphicsLayoutWidget for images
         self.graphicsWindow = GraphicsLayoutWidget(self.centralwidget, border=True)
-        self.graphicsWindow.setGeometry(QtCore.QRect(140, 10, 850, 600))
+        self.graphicsWindow.setGeometry(QtCore.QRect(170, 10, 850, 600))
         self.graphicsWindow.setObjectName("graphicsWindow")
         MainWindow.setCentralWidget(self.centralwidget)
 
@@ -154,7 +154,8 @@ class MainUI(object):
         self.fps = 0
 
         # display error plot 
-        self.error_plot = self.graphicsWindow.addPlot(3,0, colspan=200)
+        self.error_plot = self.graphicsWindow.addPlot(3,0, colspan=200,
+            title='Center to Center Distance (Pixels)')
         self.error_data = np.zeros((3, ))
         self.curve1 = self.error_plot.plot(self.error_data)
 
@@ -204,9 +205,9 @@ class MainUI(object):
         if self.model_pulldown.currentText() == "KCF":
             self.error_plot.removeItem(self.curve1) 
             self.img_root = self.path["KCF"]
+       
         if self.model_pulldown.currentText() == "MDNet":
             self.error_plot.removeItem(self.curve1) 
-
             self.img_root = self.path["MDNet"]
 
         if self.model_pulldown.currentText() == "SiamFC":
@@ -229,27 +230,31 @@ class MainUI(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.groupBox.setTitle(_translate("MainWindow", "Select Dataset"))
+        self.groupBox_legend.setTitle(_translate("MainWindow", "Legend"))
+
         self.radBtn_1.setText(_translate("MainWindow", "Bolt1"))
         self.radBtn_2.setText(_translate("MainWindow", "Bolt2"))
-                
         self.radBtn_3.setText(_translate("MainWindow", "football"))
-
         self.radBtn_4.setText(_translate("MainWindow", "football1"))
-        self.radBtn_5.setText(_translate("MainWindow", "mountainbike"))
+        self.radBtn_5.setText(_translate("MainWindow", "mountbike"))
+
         self.display_Btn.setText(_translate("MainWindow", "Display!"))
      
     def load_temp(self):
         imagePath = os.path.join(self.img_root + self.template_path )
+   
         temp = cv2.imread(imagePath)
         temp = cv2.cvtColor(temp, cv2.COLOR_BGR2RGB)
 
         return temp
+
     def load_data(self):
         n_files = len(os.listdir(self.img_root + self.img_disp_path)) - 3
         image_set = []
         for i in range(1, n_files):
         
             imagePath = os.path.join(self.img_root + self.img_disp_path + "%08d.jpg"%i)
+          
             frame = cv2.imread(imagePath) # 1 for colored imaged     
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             image_set.append(frame)
@@ -283,7 +288,6 @@ class MainUI(object):
 if __name__ == "__main__":
 
     app = QtWidgets.QApplication(sys.argv)
-
     win = QtWidgets.QMainWindow()
 
     path = {"KCF": './datasets/gui_dataset_kcf/', 
