@@ -2,3 +2,5 @@ datasets/
 *.zip
 img/
 output/
+data/
+MDnNet/
