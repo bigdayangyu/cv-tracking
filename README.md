@@ -18,11 +18,11 @@ VOT16 and OTB50
 
 ### KCF trackers 
 
-<p align="center"><img src ="https://github.com/bigdayangyu/cv-tracking/blob/master/Image_result/gui.gif" width = 20% /></p>
+<p align="center"><img src ="https://github.com/bigdayangyu/cv-tracking/blob/master/Image_result/gui.gif" width = 60% /></p>
 
 ### GUI
 
-<p align="center"><img src ="https://github.com/bigdayangyu/cv-tracking/blob/master/Image_result/GUI.jpg" width = 60% /></p>
+<p align="center"><img src ="https://github.com/bigdayangyu/cv-tracking/blob/master/Image_result/GUI.jpg" width = 65% /></p>
  
 * download the dataset: [link](https://livejohnshopkins-my.sharepoint.com/:u:/g/personal/zli124_jh_edu/ERKmcKC83ndHgdyrawYXQN8B2L3od-0bfCaQOdQ2u6n9Aw?e=9eqMSI)
 
