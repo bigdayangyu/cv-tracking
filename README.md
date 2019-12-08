@@ -17,19 +17,29 @@ VOT16 and OTB50
 * openCV python 
 
 ### KCF trackers 
-![](blob/master/Image_result/test.gif)
+
 <p align="center"><img src ="https://github.com/bigdayangyu/cv-tracking/blob/master/Image_result/test.gif" width = 20% /></p>
+
 ### GUI
 
 <p align="center"><img src ="https://github.com/bigdayangyu/cv-tracking/blob/master/Image_result/GUI.jpg" width = 60% /></p>
+* download the dataset:
 
-To run the GUI, simply change the path for the video sequence 
-```python
-    path = {"KCF": './datasets/gui_dataset_kcf/', 
-            "MDNet": './datasets/gui_dataset_mdnet/', 
-            "SiamFC": './datasets/gui_dataset_siamfc/'}
+[link](https://livejohnshopkins-my.sharepoint.com/:u:/g/personal/zli124_jh_edu/ERKmcKC83ndHgdyrawYXQN8B2L3od-0bfCaQOdQ2u6n9Aw?e=9eqMSI)
+
+```bash
+unzip datasets.zip
 ```
-And then run the tracker_gui.py file 
+
+* Change the path for the video sequence 
+```python
+path = {"KCF": './datasets/gui_dataset_kcf/', 
+        "MDNet": './datasets/gui_dataset_mdnet/', 
+        "SiamFC": './datasets/gui_dataset_siamfc/'}
+```
+
+* And then run the tracker_gui.py file 
+
 ```bash
 python /GUI/tracker_gui.py
 ```
