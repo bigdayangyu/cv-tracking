@@ -19,20 +19,19 @@ def copy_gt(source, target):
     print("\nFile copy done!\n")
 
 def main():
-    gt_root = './GroundTruth/OTB50/'
-    gt_datasets = glob.glob(gt_root + "*/groundtruth.txt")
+    gt_root = './testdataset/'
+    gt_datasets = glob.glob(gt_root + "*/groundtruth_rect.txt")
     target_root = './test_target/'
-    print(len(gt_datasets))
-    # for p in gt_datasets:
-    #     new_name = p[14:-21] 
+    for p in gt_datasets:
+        new_name = p[14:-21] 
      
-    #     new_target = target_root + new_name + '/'
+        new_target = target_root + new_name + '/'
         
-    #     print(p)
-        # print(new_target)
-        # if os.path.exists(new_target) == False:
-        #     os.makedirs(new_target)
-        # copy_gt(p , new_target)
+        print(p)
+        print(new_target)
+        if os.path.exists(new_target) == False:
+            os.makedirs(new_target)
+        copy_gt(p , new_target)
 
 if __name__ == '__main__':
     main()
