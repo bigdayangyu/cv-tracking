@@ -23,9 +23,8 @@ VOT16 and OTB50
 ### GUI
 
 <p align="center"><img src ="https://github.com/bigdayangyu/cv-tracking/blob/master/Image_result/GUI.jpg" width = 60% /></p>
-* download the dataset:
-
-[link](https://livejohnshopkins-my.sharepoint.com/:u:/g/personal/zli124_jh_edu/ERKmcKC83ndHgdyrawYXQN8B2L3od-0bfCaQOdQ2u6n9Aw?e=9eqMSI)
+ 
+* download the dataset: [link](https://livejohnshopkins-my.sharepoint.com/:u:/g/personal/zli124_jh_edu/ERKmcKC83ndHgdyrawYXQN8B2L3od-0bfCaQOdQ2u6n9Aw?e=9eqMSI)
 
 ```bash
 unzip datasets.zip
