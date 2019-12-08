@@ -3,6 +3,7 @@ import cv2
 import time
 import numpy as np
 
+
 def load_bbox(groundtruth_path,resize,dataformat=0, mode = 'nVOT'):
     
     # 'train' mode is used for VOT16 data set 

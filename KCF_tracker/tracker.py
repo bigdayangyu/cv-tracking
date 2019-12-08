@@ -1,7 +1,6 @@
 import os
 import numpy as np
 import cv2 
-import HOG
 
 def generate_gaussian_label(window_size,sigma):
     """
@@ -78,7 +77,7 @@ def guassian_correlation(x1,x2,sigma):
     return k
 
 
-def update_tracker(response,img_size,pos,HOG_flag,padding, scale_factor=1):
+def update_tracker(response,img_size,pos,padding, scale_factor=1):
     """
     Update the tracker
     Args: response [real domain], window size 
@@ -93,22 +92,18 @@ def update_tracker(response,img_size,pos,HOG_flag,padding, scale_factor=1):
     scale_w = 1.0*scale_factor*(w*(1+padding))/res_w
     scale_h = 1.0*scale_factor*(h*(1+padding))/res_h
     
-    if not HOG_flag:
-        if move[0] > res_w/2:
-          move[0] = move[0] - res_w
-        if move[1] > res_h/2:
-          move[1] = move[1] - res_h
-        px_new = px + 1.*move[0]*scale_w
-        py_new = py + 1.*move[1]*scale_h
+    
+    if move[0] > res_w/2:
+      move[0] = move[0] - res_w
+    if move[1] > res_h/2:
+      move[1] = move[1] - res_h
+    px_new = px + 1.*move[0]*scale_w
+    py_new = py + 1.*move[1]*scale_h
         #px_new = [px+1.0*move[0]*scale_w,px-(start_w-1.0*move[0])*scale_w][move[0]>start_w/2] 
         #py_new = [py+1.0*move[1]*scale_h,py-(start_h-1.0*move[1])*scale_h][move[1]>start_h/2]
-        px_new = np.int(px_new) 
-        py_new = np.int(py_new)
-    else:
-        move[0] = np.floor(res_pos[0]/32.0*(2*w))
-        move[1] = np.floor(res_pos[1]/32.0*(2*h))
-        px_new = [px+move[0],px-(2*w-move[0])][move[0]>w] 
-        py_new = [py+move[1],py-(2*h-move[1])][move[1]>h] 
+    px_new = np.int(px_new) 
+    py_new = np.int(py_new)
+    
     if px_new<0: px_new = 0
     if px_new>iw: px_new = iw-1
     if py_new<0: py_new = 0

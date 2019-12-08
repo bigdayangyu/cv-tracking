@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-import HOG
+
 
 def cos_window(window_size):
     """
@@ -18,12 +18,10 @@ def process_cos(img,cos_window):
         cos_window_out = np.transpose(cos_mc,[1,2,0])
         return img*cos_window_out
 
-def getFeature(x,cos_window,HOG_flag=0):
-    if HOG_flag:
-        x = HOG.hog(x)
-    else:
-        x = x/255.
-        x = (x - np.mean(x)) / np.std(x)
+def getFeature(x,cos_window):
+    
+    x = x/255.
+    x = (x - np.mean(x)) / np.std(x)
     x = process_cos(x,cos_window)
     return x
 
