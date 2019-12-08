@@ -18,9 +18,12 @@ VOT16 and OTB50
 
 ### KCF trackers 
 
-<p align="center"><img src ="https://github.com/bigdayangyu/cv-tracking/blob/master/Image_result/gui.gif" width = 60% /></p>
 
 ### GUI
+
+<p align="center"><img src ="https://github.com/bigdayangyu/cv-tracking/blob/master/Image_result/gui.gif" width = 60% /></p>
+
+User can choose the GUI display to display tracking result from KCF, MDNet, SiameseFC. There are five preloaded training result for demoenstration. 
 
 <p align="center"><img src ="https://github.com/bigdayangyu/cv-tracking/blob/master/Image_result/GUI.jpg" width = 65% /></p>
  
