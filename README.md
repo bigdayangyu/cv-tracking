@@ -18,7 +18,7 @@ VOT16 and OTB50
 
 ### KCF trackers 
 
-<p align="center"><img src ="https://github.com/bigdayangyu/cv-tracking/blob/master/Image_result/test.gif" width = 20% /></p>
+<p align="center"><img src ="https://github.com/bigdayangyu/cv-tracking/blob/master/Image_result/gui.gif" width = 20% /></p>
 
 ### GUI
 
