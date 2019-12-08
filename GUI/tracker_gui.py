@@ -97,13 +97,9 @@ class MainUI(object):
         self.ref_box = self.graphicsWindow.addViewBox(0, 100, colspan=50)
       
         self.score_box.invertY(True)  # Images usually have their Y-axis pointing downward
-
         self.ref_box.invertY(True)
-
         self.score_box.setAspectLocked(True)
- 
         self.ref_box.setAspectLocked(True)
-
         # image stuff 
         self.score_map = pg.ImageItem(axisOrder='row-major')
         self.groundtruth_img = pg.ImageItem(axisOrder='row-major')
