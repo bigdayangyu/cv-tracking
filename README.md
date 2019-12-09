@@ -17,8 +17,14 @@ VOT16 and OTB50
 * openCV python 
 
 ### KCF trackers 
-
-
+Run the KCF tracker:
+```bash
+python3 run.py img-dir save-dir
+```
+If enable scaling, 
+```bash
+python3 run.py img-dir save-dir --scaling True
+```
 ### GUI
 
 <p align="center"><img src ="https://github.com/bigdayangyu/cv-tracking/blob/master/Image_result/gui.gif" width = 60% /></p>
