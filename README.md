@@ -31,6 +31,8 @@ In the original baseline and above implementations of KCF, raw pixels are used f
 ### Final Comparison
 The hallmark of KCF is that it is computationally very fast, and it is the fastest tracker among the three methods. Its average frame rate is about 98 FPS on the VOT16 dataset. Using a Nvidia Geforce GTX 1050Ti GPU, the average frame rate of MDNet is 3 FPS and that of SiameseFC is 10 FPS. Although scaled KCF and the hybrid KCF are slightly slower than original KCF because additional steps are involved, they are still faster than SiameseFC and MDNet.
 
+<p align="center"><img src ="https://github.com/bigdayangyu/cv-tracking/blob/master/Image_result/Final Results.png" width =95% /></p>
+
 ## Run the project
 ### Prerequisite 
 * python 3.5.2
