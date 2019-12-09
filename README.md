@@ -1,37 +1,7 @@
-# cv-tracking 
+# cv-tracking
 
 ## Introduction 
 Our team set out to implement, compare, and contrast traditional computer vision (CV) and deep learning (DL) algorithms for single object tracking, specifically with the aim of helping us casual, yet clueless sports spectators to better understand what is going on during a game by tracking a particular player on the field or court. 
-
-## Methods
-### Models
-The Kernelized Correlation Filter (KCF) is a traditional CV algorithm introduced in 2014, and Multi-domain Convolutional Neural Networks (MDNet) and Fully Convolutional Siamese Networks (SiameseFC) are two DL-based approaches, introduced in 2015 and 2016, respectively.
-
-### Datasets
-Two datasets were used to assess the tracking algorithms. The first was the VOT16 benchmark, and the second was the OTB15 Visual Tracker Benchmark, specifically the TB-50 sequences. Both datasets contain test sequences exhibiting challenging aspects in visual tracking like occlusion, deformation, motion blur, etc. These datasets were chosen because they correspond to the approximate time when the algorithms were first introduced. 
-
-### KCF Improvements
-Based on the original paper [1], we wrote our own KCF tracker code in Python using normalized grayscale pixel values as the feature. We found several problems with this vanilla KCF and tried to improve KCF in three aspects. First, we want to make KCF adaptive to changing scales. Second, we added an object detection procedure to help relocate the target when KCF fails. Finally, we explored the capability of HOG as a feature descriptor based on the author’s code [4].
-
-#### Multi-scale Sampling
-The vanilla KCF uses a window with a fixed size. Therefore, it cannot adapt to targets with changing scales (i.e. when the target gets closer or further from the camera). We address this problem by using a multi-scale sampling scheme. In the detection step of the algorithm, sub-windows of different scales are tested by sampling a different sized window and then scaling it to match the original image size, and the option providing the highest response is set as the current scale of the target. To avoid unnecessarily frequent changes in scales, the scores of scaled patches are weighted. The overall performance of the scaled KCF on the entire VOT16 dataset is slightly worse than the unscaled one, but better results are observed for certain sequences. The overall performance is not necessarily better than the unscaled version, since for images without scaling effects, multi-scale sampling increases the instability in the detection and update of the tracker. We hypothesize that using a bounding box regression or a DL-based detector may help improve the overall performance in mean IoU on benchmark datasets.
-
-<p align="center"><img src ="https://github.com/bigdayangyu/cv-tracking/blob/master/Image_result/kcf.gif" width =30% /></p>
-
-#### Detection for Failure Recovery
-One fatal disadvantage of KCF is that it cannot recover when it loses track of the target. KCF only samples a window around the previously tracked position, so the tracker fails if the target moves too far away. This can easily happen if the object is occluded for a period time, since the object has shifted too far from the previous tracked position after occlusion. KCF also easily fails when the object undergoes a significant movement between frames because the object is no longer observable in a nearby window. For example, when some frames are purposely removed in the middle of a sequence, the target jumps to another position out of the detecting window, and KCF loses track and cannot recover.
-
-We hypothesized that this problem could be solved by incorporating an additional detector, which can detect objects globally rather than in the surrounding window. In our algorithm, when the response score of KCF is lower than a threshold or suspiciously high, we assume that KCF has lost track of the object, and the detector is triggered. Selective search [7] is implemented to propose possible regions of objects. The regions are restricted given the posterior knowledge of the previous target position and size. Then normalized cross correlations of the proposed regions and the template are compared to find the target. For the purposes of this project, our implementation was relatively straightforward, and there exist more powerful and efficient trackers which perform very well in real-time object detection, for example, F-RCNNs [8] and YOLO [9]. Another benefit of using such a hybrid tracker is that we can also resize the bounding box when the object has greatly changed in its appearance.
-
-<p align="center"><img src ="https://github.com/bigdayangyu/cv-tracking/blob/master/Image_result/kcf+detector.gif" width =30% /></p>
-
-#### A Better Feature Representation - Histogram of Oriented Gradients (HOG)
-In the original baseline and above implementations of KCF, raw pixels are used for detection and training. However, raw pixels used directly are not strong representations of features. A grayscale KCF very quickly loses track of Bolt and is unable to recover. A slightly higher level of representation like HOG, even though it is comparatively low level compared to those used in DL methods, results in much better performance. The HOG-based KCF implemented in the original code was run below for comparison with the grayscale KCF.
-
-### Final Comparison
-The hallmark of KCF is that it is computationally very fast, and it is the fastest tracker among the three methods. Its average frame rate is about 98 FPS on the VOT16 dataset. Using a Nvidia Geforce GTX 1050Ti GPU, the average frame rate of MDNet is 3 FPS and that of SiameseFC is 10 FPS. Although scaled KCF and the hybrid KCF are slightly slower than original KCF because additional steps are involved, they are still faster than SiameseFC and MDNet.
-
-<p align="center"><img src ="https://github.com/bigdayangyu/cv-tracking/blob/master/Image_result/Final Results.png" width =95% /></p>
 
 ## Run the project
 ### Prerequisite 
@@ -72,6 +42,36 @@ path = {"KCF": './datasets/gui_dataset_kcf/',
 ```bash
 python /GUI/tracker_gui.py
 ```
+
+## Methods
+### Models
+The Kernelized Correlation Filter (KCF) is a traditional CV algorithm introduced in 2014, and Multi-domain Convolutional Neural Networks (MDNet) and Fully Convolutional Siamese Networks (SiameseFC) are two DL-based approaches, introduced in 2015 and 2016, respectively.
+
+### Datasets
+Two datasets were used to assess the tracking algorithms. The first was the VOT16 benchmark, and the second was the OTB15 Visual Tracker Benchmark, specifically the TB-50 sequences. Both datasets contain test sequences exhibiting challenging aspects in visual tracking like occlusion, deformation, motion blur, etc. These datasets were chosen because they correspond to the approximate time when the algorithms were first introduced. 
+
+### KCF Improvements
+Based on the original paper [1], we wrote our own KCF tracker code in Python using normalized grayscale pixel values as the feature. We found several problems with this vanilla KCF and tried to improve KCF in three aspects. First, we want to make KCF adaptive to changing scales. Second, we added an object detection procedure to help relocate the target when KCF fails. Finally, we explored the capability of HOG as a feature descriptor based on the author’s code [4].
+
+#### Multi-scale Sampling
+The vanilla KCF uses a window with a fixed size. Therefore, it cannot adapt to targets with changing scales (i.e. when the target gets closer or further from the camera). We address this problem by using a multi-scale sampling scheme. In the detection step of the algorithm, sub-windows of different scales are tested by sampling a different sized window and then scaling it to match the original image size, and the option providing the highest response is set as the current scale of the target. To avoid unnecessarily frequent changes in scales, the scores of scaled patches are weighted. The overall performance of the scaled KCF on the entire VOT16 dataset is slightly worse than the unscaled one, but better results are observed for certain sequences. The overall performance is not necessarily better than the unscaled version, since for images without scaling effects, multi-scale sampling increases the instability in the detection and update of the tracker. We hypothesize that using a bounding box regression or a DL-based detector may help improve the overall performance in mean IoU on benchmark datasets.
+
+<p align="center"><img src ="https://github.com/bigdayangyu/cv-tracking/blob/master/Image_result/kcf.gif" width =30% /></p>
+
+#### Detection for Failure Recovery
+One fatal disadvantage of KCF is that it cannot recover when it loses track of the target. KCF only samples a window around the previously tracked position, so the tracker fails if the target moves too far away. This can easily happen if the object is occluded for a period time, since the object has shifted too far from the previous tracked position after occlusion. KCF also easily fails when the object undergoes a significant movement between frames because the object is no longer observable in a nearby window. For example, when some frames are purposely removed in the middle of a sequence, the target jumps to another position out of the detecting window, and KCF loses track and cannot recover.
+
+We hypothesized that this problem could be solved by incorporating an additional detector, which can detect objects globally rather than in the surrounding window. In our algorithm, when the response score of KCF is lower than a threshold or suspiciously high, we assume that KCF has lost track of the object, and the detector is triggered. Selective search [7] is implemented to propose possible regions of objects. The regions are restricted given the posterior knowledge of the previous target position and size. Then normalized cross correlations of the proposed regions and the template are compared to find the target. For the purposes of this project, our implementation was relatively straightforward, and there exist more powerful and efficient trackers which perform very well in real-time object detection, for example, F-RCNNs [8] and YOLO [9]. Another benefit of using such a hybrid tracker is that we can also resize the bounding box when the object has greatly changed in its appearance.
+
+<p align="center"><img src ="https://github.com/bigdayangyu/cv-tracking/blob/master/Image_result/kcf+detector.gif" width =30% /></p>
+
+#### A Better Feature Representation - Histogram of Oriented Gradients (HOG)
+In the original baseline and above implementations of KCF, raw pixels are used for detection and training. However, raw pixels used directly are not strong representations of features. A grayscale KCF very quickly loses track of Bolt and is unable to recover. A slightly higher level of representation like HOG, even though it is comparatively low level compared to those used in DL methods, results in much better performance. The HOG-based KCF implemented in the original code was run below for comparison with the grayscale KCF.
+
+### Final Comparison
+The hallmark of KCF is that it is computationally very fast, and it is the fastest tracker among the three methods. Its average frame rate is about 98 FPS on the VOT16 dataset. Using a Nvidia Geforce GTX 1050Ti GPU, the average frame rate of MDNet is 3 FPS and that of SiameseFC is 10 FPS. Although scaled KCF and the hybrid KCF are slightly slower than original KCF because additional steps are involved, they are still faster than SiameseFC and MDNet.
+
+<p align="center"><img src ="https://github.com/bigdayangyu/cv-tracking/blob/master/Image_result/Final Results.png" width =95% /></p>
 
 ## References
 1.	J. F. Henriques, R. Caseiro, P. Martins, and J. Batista, “High-Speed Tracking with Kernelized Correlation Filters,” IEEE Transactions on Pattern Analysis and Machine Intelligence, vol. 37, no. 3, pp. 583–596, Mar. 2015.
